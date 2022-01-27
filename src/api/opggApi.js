@@ -1,15 +1,14 @@
-import { getInstance, postInstance } from "./index";
+import { getInstance } from "./index";
 
-export const getSummoner = async (name) => {
+export const getSummoner = async (summonerName) => {
     const response = await getInstance.get(
-        `${name}`,
+        `${summonerName}`,
     );
     return response;
 };
-export const submit = async data => {
-    const response = await postInstance.post(
-        `/submit`,
-        data
+export const getMostInfo = async (summonerName) => {
+    const response = await getInstance.get(
+        `${summonerName}/mostInfo` ,
     );
     return response;
 };

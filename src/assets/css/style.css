@@ -1,4 +1,22 @@
-.header {
-    width: 100%;
-    background-color: #1ea1f7;
+.tabActive {
+  background-color: #ededed !important;
+  border-bottom: none !important;
+}
+.tabActive a {
+  color: #5e5e5e !important;
+  font-weight: 900;
+}
+
+
+.green {
+    color: #2daf7f !important;
+}
+.blue {
+    color: #1f8ecd !important;
+}
+.orange {
+    color: #e19205 !important;
+}
+.red {
+    color: #c6443e !important;
 }

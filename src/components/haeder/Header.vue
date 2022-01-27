@@ -7,76 +7,63 @@
           placeholder="소환사명,챔피언..."
           @click="showPopupFnc()"
           @keyup="hidePopupFnc()"
+          v-click-outside="hidePopupFnc"
           @keyup.enter="submitFnc($event.target.value)"
           ref="headerInput"
         />
+
         <img
           src="//opgg-static.akamaized.net/images/gnb/svg/00-icon-gg.svg"
           alt="opgglogo"
           width="30px"
         />
-        <div v-show="popupFlag" :class="$style.searchPopup">
-          <ul>
-            <li :class="$style.active">최근검색</li>
-            <li>즐겨찾기</li>
-          </ul>
-          <div :class="$style.searchPopupItem">
-            <div v-show="recentSearchList.length === 0">
-              최근에 본 소환사가 없습니다.
-            </div>
-            <div v-show="recentSearchList.length !== 0">
-              <div
-                v-for="(item, index) in recentSearchList"
-                :key="item.index"
-                :class="$style.recentSearchItem"
-              >
-                <a
-                  href="javascript:void(0);"
-                  :class="$style.recentSearchText"
-                  @click="submitFnc(item.name)"
-                  >{{ item.name }}</a
-                >
-                <span>
-                  <a
-                    :class="$style.recentSearchCloseBtn"
-                    href="javascript:void(0);"
-                    @click="deleteSearchFnc(index)"
-                  ></a>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SearchPopup
+          :popupFlag="popupFlag"
+          :recentSearchList="recentSearchList"
+          @submitFnc="submitFnc"
+          @deleteSearchFnc="deleteSearchFnc"
+        />
       </span>
     </div>
   </header>
 </template>
 
 <script>
+import vClickOutside from "v-click-outside";
+import SearchPopup from "./SearchPopup.vue";
 export default {
+  components: { SearchPopup },
   data() {
     return {
-      popupFlag: false,
       recentSearchList: [],
+      popupFlag: false,
     };
   },
+  directives: {
+    clickOutside: vClickOutside.directive,
+  },
   methods: {
+    // 최근검색 팝업 toggle
     showPopupFnc() {
       if (!this.userName) {
         this.popupFlag = !this.popupFlag;
         return;
       }
     },
+    // 최근검샙 팝업 hide
     hidePopupFnc() {
       this.popupFlag = false;
     },
-    submitFnc(value) {
+    // 소환사검색 Fnc
+    async submitFnc(value) {
       if (!value) return;
-      this.$store.dispatch("getSummonerFnc", value);
+      await this.$store.dispatch("getSummonerFnc", value);
+      await this.$store.dispatch("getMostInfoFnc", value);
       this.$refs.headerInput.value = "";
       this.hidePopupFnc();
       this.recentSearchFnc(value);
     },
+    // 최근검색 Fnc
     recentSearchFnc(value) {
       const getSearchData = localStorage.getItem("recent-search");
       if (!getSearchData) {
@@ -89,18 +76,21 @@ export default {
       searchArrayData.unshift({ name: value });
       this.saveRecentSearch(searchArrayData);
     },
+    // 최근검색 초기데이터 Fnc
     createdRecentSearch() {
       const getSearchData = localStorage.getItem("recent-search");
       if (!getSearchData) return;
       const searchData = JSON.parse(getSearchData);
       this.recentSearchList = searchData;
     },
+    // 최근검색 삭제 Fnc
     deleteSearchFnc(index) {
       const getSearchData = localStorage.getItem("recent-search");
       const searchData = JSON.parse(getSearchData);
       searchData.splice(index, 1);
       this.saveRecentSearch(searchData);
     },
+    // 최근검색 중복제거 Fnc
     overlapSearchData(arr, value) {
       const searchData = [...arr];
       for (let i = 0; i < searchData.length; i++) {
@@ -110,6 +100,7 @@ export default {
       }
       return searchData;
     },
+    // 최근검색 저장 Fnc
     saveRecentSearch(value) {
       this.recentSearchList = value;
       localStorage.setItem("recent-search", JSON.stringify(value));
@@ -128,7 +119,7 @@ export default {
   background-color: #1ea1f7;
 }
 .headerBox {
-  width: 1300px;
+  width: 970px;
   margin: 0 auto;
   display: flex;
   justify-content: flex-end;
@@ -157,51 +148,5 @@ export default {
   position: absolute;
   top: 10px;
   right: 10px;
-}
-.searchPopup {
-  position: absolute;
-  width: 100%;
-  top: 36px;
-  border-radius: 2px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 50%);
-}
-.searchPopup ul {
-  display: table;
-  width: 100%;
-  line-height: 40px;
-  font-size: 14px;
-  background: #e3e3e3;
-  color: #9c9c9c;
-}
-.searchPopup ul li {
-  display: table-cell;
-  width: 50%;
-  text-align: center;
-}
-.active {
-  background: #fff;
-  color: #4a4a4a;
-}
-.searchPopupItem {
-  padding: 20px;
-}
-.recentSearchText {
-  color: #666;
-  font-size: 12px;
-}
-.recentSearchItem {
-  position: relative;
-}
-.recentSearchCloseBtn {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  width: 16px;
-  height: 16px;
-  background-image: url("https://opgg-static.akamaized.net/images/site/icon-history-delete.png");
-  background-position: center center;
-  background-repeat: no-repeat;
-  cursor: pointer;
 }
 </style>

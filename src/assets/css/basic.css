@@ -3,6 +3,7 @@ html, body {
     padding: 0;
     width: 100%;
     height: 100%;
+    background-color: #eaeaea;
 }
 div {
     box-sizing: border-box;
@@ -20,4 +21,11 @@ li {
 }
 a {
     text-decoration: none;
+}
+p {
+    margin: 0;
+}
+
+main {
+    padding-bottom: 5%;
 }
