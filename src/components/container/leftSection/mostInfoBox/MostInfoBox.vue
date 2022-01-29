@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import ChampionsinfoItem from "./ChampionsinfoItem.vue";
-import RecentWinRateItem from "./RecentWinRateItem.vue";
+import ChampionsinfoItem from "../ChampionsinfoItem.vue";
+import RecentWinRateItem from "../mostInfoBox/RecentWinRateItem.vue";
 export default {
   components: { ChampionsinfoItem, RecentWinRateItem },
   data() {

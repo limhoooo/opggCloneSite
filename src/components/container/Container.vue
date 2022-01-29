@@ -1,25 +1,26 @@
 <template>
   <main>
     <ContentHeader />
-    <div class="content">
-      <div class="SideContent">
+    <div :class="$style.content">
+      <div :class="$style.sideContent">
         <template v-if="leagues.length > 0">
           <TierBox :division="'solo'" :leagues="leagues[0]" />
           <TierBox :division="'team'" :leagues="leagues[1]" />
         </template>
         <MostInfoBox />
       </div>
-      <div></div>
+      <MatchListBox />
     </div>
   </main>
 </template>
 
 <script>
 import ContentHeader from "./ContentHeader.vue";
-import MostInfoBox from "./MostInfoBox.vue";
-import TierBox from "./TierBox.vue";
+import MatchListBox from "./leftSection/matchListBox/MatchListBox.vue";
+import MostInfoBox from "./leftSection/mostInfoBox/MostInfoBox.vue";
+import TierBox from "./leftSection/mostInfoBox/TierBox.vue";
 export default {
-  components: { ContentHeader, TierBox, MostInfoBox },
+  components: { ContentHeader, TierBox, MostInfoBox, MatchListBox },
   computed: {
     userInfo() {
       return this.$store.state.userInfo || [];
@@ -35,12 +36,14 @@ export default {
 };
 </script>
 
-<style>
+<style module>
 .content {
   width: 970px;
   margin: 0 auto;
+  display: flex;
+  justify-content: flex-start;
 }
-.SideContent {
+.sideContent {
   width: 300px;
 }
 </style>
