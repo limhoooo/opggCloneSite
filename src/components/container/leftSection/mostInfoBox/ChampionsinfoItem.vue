@@ -13,65 +13,35 @@
       :class="`
             ${$style.mostinfoTextBox} ${$style.textCenter} ${$style.mostinfoKdaBox}`"
     >
-      <h3 :class="kdaColor()">{{ kda }}:1 KDA</h3>
+      <h3
+        :class="
+          kdaColor(kda(champions.kills, champions.assists, champions.deaths))
+        "
+      >
+        {{ kda(champions.kills, champions.assists, champions.deaths) }}:1 KDA
+      </h3>
       <span>
-        {{ killsAvg }} / {{ assistsAvg }} /
-        {{ deathsAvg }}
+        {{ killsAvg(champions.kills, champions.games) }} /
+        {{ assistsAvg(champions.assists, champions.games) }} /
+        {{ deathsAvg(champions.deaths, champions.games) }}
       </span>
     </div>
     <div :class="`${$style.mostinfoTextBox} ${$style.textCenter}`">
-      <h3>{{ winsAvg }}%</h3>
+      <h3 :class="{ red: winsAvg(champions.wins, champions.games) >= 60 }">
+        {{ winsAvg(champions.wins, champions.games) }}%
+      </h3>
       <span> {{ champions.games }} Played </span>
     </div>
   </div>
 </template>
 
 <script>
+import calculateMixin from "../../../../common/calculateMixin.js";
 export default {
   props: {
     champions: { type: Object },
   },
-  computed: {
-    kda() {
-      return (
-        Math.floor(
-          ((this.champions.kills + this.champions.assists) /
-            this.champions.deaths) *
-            100
-        ) / 100
-      );
-    },
-    killsAvg() {
-      return (
-        Math.floor((this.champions.kills / this.champions.games) * 10) / 10
-      );
-    },
-    assistsAvg() {
-      return (
-        Math.floor((this.champions.assists / this.champions.games) * 10) / 10
-      );
-    },
-    deathsAvg() {
-      return (
-        Math.floor((this.champions.deaths / this.champions.games) * 10) / 10
-      );
-    },
-    winsAvg() {
-      return Math.floor((this.champions.wins / this.champions.games) * 100);
-    },
-  },
-  methods: {
-    kdaColor() {
-      const kdaNumber = this.kda;
-      if (Math.floor(kdaNumber) === 3) {
-        return "green";
-      } else if (Math.floor(kdaNumber) === 4) {
-        return "blue";
-      } else if (Math.floor(kdaNumber) >= 5) {
-        return "orange";
-      }
-    },
-  },
+  mixins: [calculateMixin],
 };
 </script>
 
@@ -92,7 +62,6 @@ export default {
 }
 .mostinfoTextBox {
   margin-top: 5px;
-  margin-right: 5px;
 }
 .mostinfoTextBox:last-child {
   margin-right: 0;
@@ -117,6 +86,7 @@ export default {
   white-space: nowrap;
 }
 .mostinfoKdaBox {
-  width: 88px;
+  width: 90px;
+  margin-right: 5px;
 }
 </style>

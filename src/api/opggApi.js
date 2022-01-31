@@ -12,3 +12,9 @@ export const getMostInfo = async (summonerName) => {
     );
     return response;
 };
+export const getMatchList = async (summonerName) => {
+    const response = await getInstance.get(
+        `${summonerName}/matches` ,
+    );
+    return response;
+};

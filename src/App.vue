@@ -14,6 +14,7 @@ export default {
   created() {
     this.$store.dispatch("getSummonerFnc", "임호");
     this.$store.dispatch("getMostInfoFnc", "임호");
+    this.$store.dispatch("getMatchListFnc", "임호");
   },
 };
 </script>

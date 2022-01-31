@@ -54,11 +54,15 @@ export default {
     hidePopupFnc() {
       this.popupFlag = false;
     },
-    // 소환사검색 Fnc
-    async submitFnc(value) {
-      if (!value) return;
+    async getData(value) {
       await this.$store.dispatch("getSummonerFnc", value);
       await this.$store.dispatch("getMostInfoFnc", value);
+      await this.$store.dispatch("getMatchListFnc", value);
+    },
+    // 소환사검색 Fnc
+    submitFnc(value) {
+      if (!value) return;
+      this.getData(value);
       this.$refs.headerInput.value = "";
       this.hidePopupFnc();
       this.recentSearchFnc(value);

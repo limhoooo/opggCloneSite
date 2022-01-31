@@ -80,7 +80,7 @@ export default {
   align-items: center;
 }
 .graph {
-  width: 140px;
+  width: 130px;
   height: 20px;
   border-radius: 3px;
   background: #ee5a52;
