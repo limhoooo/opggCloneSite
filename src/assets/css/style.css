@@ -7,7 +7,9 @@
   font-weight: 900;
 }
 
-
+.black {
+  color: #333 !important;
+}
 .green {
     color: #2daf7f !important;
 }

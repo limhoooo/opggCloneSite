@@ -137,7 +137,11 @@
         </div>
       </div>
       <div :class="$style.matchListListBox">
-        <MatchListItem />
+        <MatchListItem
+          v-for="game in games"
+          :key="game.index"
+          :gameInfo="game"
+        />
       </div>
     </div>
   </div>
