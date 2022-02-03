@@ -18,3 +18,9 @@ export const getMatchList = async (summonerName) => {
     );
     return response;
 };
+export const getMatchDetail = async (summonerName, gameId) => {
+    const response = await getInstance.get(
+        `${summonerName}/matchDetail/${gameId}` ,
+    );
+    return response;
+};

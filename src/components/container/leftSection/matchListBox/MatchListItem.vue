@@ -1,12 +1,14 @@
 <template>
-  <div :class="$style.matchListItem">
+  <div :class="`${$style.matchListItem} ${winBgClassFnc}`">
     <div :class="$style.matchGameText">
       <div>
         <div>{{ gameInfo.gameType }}</div>
         <div>13일전</div>
       </div>
       <div>
-        <div>{{ gameInfo.isWin ? "승리" : "패배" }}</div>
+        <div>
+          <b :class="winTextClassFnc">{{ gameInfo.isWin ? "승리" : "패배" }}</b>
+        </div>
         <div>28분 32초</div>
       </div>
     </div>
@@ -59,54 +61,54 @@
     <div>
       <div :class="$style.matchItemBox">
         <img
-          src="https://opgg-static.akamaized.net/images/lol/champion/Ryze.png?image=q_auto&v=1591083841"
-          alt=""
-        />
-        <img
-          src="https://opgg-static.akamaized.net/images/lol/champion/Ryze.png?image=q_auto&v=1591083841"
-          alt=""
-        />
-        <img
-          src="https://opgg-static.akamaized.net/images/lol/champion/Ryze.png?image=q_auto&v=1591083841"
-          alt=""
-        />
-        <img
-          src="https://opgg-static.akamaized.net/images/lol/champion/Ryze.png?image=q_auto&v=1591083841"
-          alt=""
-        />
-        <img
-          src="https://opgg-static.akamaized.net/images/lol/champion/Ryze.png?image=q_auto&v=1591083841"
-          alt=""
-        />
-        <img
-          src="https://opgg-static.akamaized.net/images/lol/champion/Ryze.png?image=q_auto&v=1591083841"
-          alt=""
-        />
-        <img
-          src="https://opgg-static.akamaized.net/images/lol/champion/Ryze.png?image=q_auto&v=1591083841"
-          alt=""
-        />
-        <img
-          src="https://opgg-static.akamaized.net/images/lol/champion/Ryze.png?image=q_auto&v=1591083841"
-          alt=""
+          v-for="item in gameInfo.items"
+          :key="item.index"
+          :src="item.imageUrl"
+          alt="itemImage"
         />
       </div>
-      <div :class="$style.wardBox">
+      <div
+        v-show="gameInfo.stats.ward.visionWardsBought"
+        :class="$style.wardBox"
+      >
         <img
-          src="https://opgg-static.akamaized.net/images/lol/champion/Ryze.png?image=q_auto&v=1591083841"
-          alt=""
+          v-show="gameInfo.isWin"
+          src="https://opgg-static.akamaized.net/images/site/summoner/icon-ward-blue.png"
+          alt="wardImage"
         />
-        <p>제어 와드 3</p>
+        <img
+          v-show="!gameInfo.isWin"
+          src="https://opgg-static.akamaized.net/images/site/summoner/icon-ward-red.png"
+          alt="wardImage"
+        />
+        <p>제어 와드 {{ gameInfo.stats.ward.visionWardsBought }}</p>
       </div>
     </div>
     <div>
       <div :class="$style.teamBox">
-        <div :class="$style.team">
-          <img
-            src="https://opgg-static.akamaized.net/images/lol/champion/Ryze.png?image=q_auto&v=1591083841"
-            alt=""
-          />
-          <span :class="$style.name">dssdsdsd</span>
+        <div>
+          <div
+            v-for="team in teamData.teams[0].players"
+            :key="team.summonerId"
+            :class="$style.team"
+          >
+            <img :src="team.champion.imageUrl" alt="championImage" />
+            <span :class="$style.name">
+              {{ team.summonerName }}
+            </span>
+          </div>
+        </div>
+        <div>
+          <div
+            v-for="team in teamData.teams[1].players"
+            :key="team.summonerId"
+            :class="$style.team"
+          >
+            <img :src="team.champion.imageUrl" alt="championImage" />
+            <span :class="$style.name">
+              {{ team.summonerName }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -120,14 +122,35 @@ export default {
       type: Object,
     },
   },
+  data() {
+    return {
+      teamData: [],
+    };
+  },
+  computed: {
+    winTextClassFnc() {
+      return this.gameInfo.isWin ? "blue" : "red";
+    },
+    winBgClassFnc() {
+      return this.gameInfo.isWin ? "blueBg" : "redBg";
+    },
+  },
+  async created() {
+    const data = {
+      summonerName: this.gameInfo.summonerName,
+      gameId: this.gameInfo.gameId,
+    };
+    this.teamData = await this.$store.dispatch("getMatchDetailFnc", data);
+  },
+  mounted() {},
+  updated() {},
 };
 </script>
 
 <style module>
 .matchListItem {
   width: 100%;
-  background-color: #e2b6b3;
-  border-color: #cea7a7;
+  margin-top: 8px;
   display: flex;
   justify-content: flex-start;
 }
@@ -210,6 +233,7 @@ export default {
 .wardBox img {
   width: 16px;
   height: 16px;
+  margin-right: 3px;
 }
 .team {
   display: flex;
@@ -225,5 +249,9 @@ export default {
   vertical-align: middle;
   font-size: 11px;
   color: #555;
+}
+.teamBox {
+  display: flex;
+  justify-content: flex-start;
 }
 </style>

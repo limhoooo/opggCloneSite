@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { getSummoner, getMostInfo, getMatchList } from "../api/opggApi";
+import { getSummoner, getMostInfo, getMatchList, getMatchDetail } from "../api/opggApi";
 
 Vue.use(Vuex);
 
@@ -15,6 +15,7 @@ export default new Vuex.Store({
         games: [],
         positions: [],
         summary: [],
+        testtt: [],
     },
     getters: {
 
@@ -34,6 +35,9 @@ export default new Vuex.Store({
             state.games = data.games;
             state.positions = data.positions;
             state.summary = data.summary;
+        },
+        setMatchDetail(state, data) {
+            state.testtt = data;
         }
 
     },
@@ -54,10 +58,18 @@ export default new Vuex.Store({
                 console.log(error);
             }
         },
-        async getMatchListFnc({ commit }, data) {
+        async getMatchListFnc({ commit }, summonerName) {
             try {
-                const result = await getMatchList(data);
+                const result = await getMatchList(summonerName);
                 commit('setMatchList', result.data)
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async getMatchDetailFnc({ commit }, data) {
+            try {
+                const result = await getMatchDetail(data.summonerName, data.gameId);
+                return result.data;
             } catch (error) {
                 console.log(error);
             }

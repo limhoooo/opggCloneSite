@@ -22,3 +22,11 @@
 .red {
     color: #c6443e !important;
 }
+.blueBg {
+  background-color: #b0ceea;
+  border-color: #b0ceea;
+}
+.redBg {
+  background-color: #d6b5b2;
+  border-color: #d6b5b2;
+}
