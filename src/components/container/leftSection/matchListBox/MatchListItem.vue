@@ -2,14 +2,17 @@
   <div :class="`${$style.matchListItem} ${winBgClassFnc}`">
     <div :class="$style.matchGameText">
       <div>
-        <div>{{ gameInfo.gameType }}</div>
+        <div :class="$style.gameTypeText">{{ gameInfo.gameType }}</div>
         <div>13일전</div>
       </div>
       <div>
         <div>
           <b :class="winTextClassFnc">{{ gameInfo.isWin ? "승리" : "패배" }}</b>
         </div>
-        <div>28분 32초</div>
+        <div>
+          {{ String(gameInfo.gameLength).substr(0, 2) }}분
+          {{ String(gameInfo.gameLength).substr(2, 4) }}초
+        </div>
       </div>
     </div>
     <div>
@@ -36,7 +39,7 @@
           </div>
         </div>
       </div>
-      <div :class="$style.matchNameText">리븐</div>
+      <div :class="$style.matchNameText"></div>
     </div>
     <div :class="$style.kdaBox">
       <div>
@@ -45,26 +48,51 @@
           <span class="red">{{ gameInfo.stats.general.death }}</span> /
           {{ gameInfo.stats.general.assist }}
         </h3>
-        <span>
+        <span :class="$style.kdaString">
           <b class="black">{{ gameInfo.stats.general.kdaString }}</b>
           평점
         </span>
+        <div :class="$style.msgBox">
+          <span
+            v-show="gameInfo.stats.general.largestMultiKillString"
+            :class="$style.kill"
+            >{{ gameInfo.stats.general.largestMultiKillString }}</span
+          >
+          <span
+            v-show="gameInfo.stats.general.opScoreBadge"
+            :class="$style.ace"
+            >{{ gameInfo.stats.general.opScoreBadge }}</span
+          >
+        </div>
       </div>
     </div>
     <div :class="$style.matchInfoText">
-      <p>레벨14</p>
-      <p>160 (5.6) CS</p>
-      <p>킬관여 30%</p>
+      <p>레벨 {{ gameInfo.champion.level }}</p>
+      <p>
+        {{ gameInfo.stats.general.cs }} ({{ gameInfo.stats.general.csPerMin }})
+        CS
+      </p>
+      <p class="red">
+        킬관여 {{ gameInfo.stats.general.contributionForKillRate }}
+      </p>
       <p>매치 평균</p>
-      <p>Gold 3</p>
+      <p>
+        <b>{{ gameInfo.tierRankShort }}</b>
+      </p>
     </div>
-    <div>
+    <div :class="$style.matchItem">
       <div :class="$style.matchItemBox">
         <img
           v-for="item in gameInfo.items"
           :key="item.index"
           :src="item.imageUrl"
           alt="itemImage"
+        />
+        <img
+          v-for="index in itemNonelength"
+          :key="index"
+          src="https://opgg-static.akamaized.net/images/pattern/opacity.1.png"
+          alt="itemNoneImage"
         />
       </div>
       <div
@@ -85,7 +113,7 @@
       </div>
     </div>
     <div>
-      <div :class="$style.teamBox">
+      <div :class="$style.teamBox" v-if="teamData.teams">
         <div>
           <div
             v-for="team in teamData.teams[0].players"
@@ -134,6 +162,9 @@ export default {
     winBgClassFnc() {
       return this.gameInfo.isWin ? "blueBg" : "redBg";
     },
+    itemNonelength() {
+      return 8 - this.gameInfo.items.length;
+    },
   },
   async created() {
     const data = {
@@ -142,8 +173,6 @@ export default {
     };
     this.teamData = await this.$store.dispatch("getMatchDetailFnc", data);
   },
-  mounted() {},
-  updated() {},
 };
 </script>
 
@@ -160,6 +189,12 @@ export default {
   font-size: 11px;
   color: #555;
   line-height: 16px;
+  padding: 20px 8px;
+}
+.gameTypeText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .matchNameText {
   text-align: center;
@@ -170,11 +205,13 @@ export default {
 .matchImage {
   display: flex;
   justify-content: flex-start;
+  padding-top: 29px;
 }
 .matchImage > img {
   width: 46px;
   height: 46px;
   border-radius: 50%;
+  margin-right: 5px;
 }
 .matchSkillsImage {
   display: flex;
@@ -186,8 +223,8 @@ export default {
   display: inline-block;
 }
 .kdaBox {
-  display: flex;
-  align-items: center;
+  padding-top: 25px;
+  width: 115px;
 }
 .kdaBox > div {
   text-align: center;
@@ -197,9 +234,10 @@ export default {
   font-size: 15px;
   margin: 0;
 }
-.kdaBox > div > span {
+.kdaString {
   color: #555e5e;
   font-size: 12px;
+  display: block;
 }
 .matchInfoText {
   width: 90px;
@@ -207,6 +245,10 @@ export default {
   text-align: center;
   line-height: 18px;
   color: #555e5e;
+  padding: 10px;
+}
+.matchItem {
+  padding: 15px;
 }
 .matchItemBox {
   width: 96px;
@@ -238,10 +280,13 @@ export default {
 .team {
   display: flex;
   justify-content: flex-start;
+  width: 80px;
+  margin-top: 5px;
 }
 .team img {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
 }
 .team .name {
   display: inline-block;
@@ -249,9 +294,36 @@ export default {
   vertical-align: middle;
   font-size: 11px;
   color: #555;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .teamBox {
   display: flex;
   justify-content: flex-start;
+  padding: 0 10px;
+}
+.msgBox {
+  display: inline-block;
+  color: #fff;
+  margin: 8px auto 0;
+  font-size: 10px;
+}
+.msgBox .kill {
+  display: inline-block;
+  background: #ee5a52;
+  border: 1px solid #c6443e;
+  border-radius: 15px;
+  padding: 2px 5px;
+  margin-right: 3px;
+  line-height: 1;
+}
+.msgBox .ace {
+  display: inline-block;
+  border-radius: 9px;
+  background-color: #8c51c5;
+  border: solid 1px #7f3590;
+  padding: 2px 5px;
+  line-height: 1;
 }
 </style>

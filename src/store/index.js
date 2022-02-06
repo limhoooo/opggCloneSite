@@ -10,9 +10,11 @@ export default new Vuex.Store({
         ladderRank: [],
         previousTiers: [],
         leagues: [],
-        mostInfo: [],
+        mostInfoChampions: [],
+        mostInfoRecentWinRate: [],
         champions: [],
         games: [],
+        gamesCapyData: [],
         positions: [],
         summary: [],
         testtt: [],
@@ -25,14 +27,16 @@ export default new Vuex.Store({
             state.userInfo = data.summoner;
             state.ladderRank = data.summoner.ladderRank;
             state.previousTiers = data.summoner.previousTiers;
-            state.leagues = data.summoner.leagues;
+            state.leagues = data.summoner.leagues; RecentWinRate
         },
         setMostInfo(state, data) {
-            state.mostInfo = data;
+            state.mostInfoChampions = data.champions.sort((a, b) => b.games - a.games);
+            state.mostInfoRecentWinRate = data.recentWinRate;
         },
         setMatchList(state, data) {
             state.champions = data.champions;
             state.games = data.games;
+            state.gamesCapyData = [...data.games];
             state.positions = data.positions;
             state.summary = data.summary;
         },

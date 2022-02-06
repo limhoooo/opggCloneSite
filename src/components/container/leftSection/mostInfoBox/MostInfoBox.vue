@@ -44,10 +44,10 @@ export default {
   },
   computed: {
     championsList() {
-      return this.$store.state.mostInfo.champions || [];
+      return this.$store.state.mostInfoChampions || [];
     },
     recentWinRate() {
-      return this.$store.state.mostInfo.recentWinRate || [];
+      return this.$store.state.mostInfoRecentWinRate || [];
     },
   },
   methods: {

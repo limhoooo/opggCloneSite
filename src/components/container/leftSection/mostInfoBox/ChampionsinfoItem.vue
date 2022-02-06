@@ -18,7 +18,7 @@
           kdaColor(kda(champions.kills, champions.assists, champions.deaths))
         "
       >
-        {{ kda(champions.kills, champions.assists, champions.deaths) }}:1 KDA
+        {{ kda(champions.kills, champions.assists, champions.deaths) }}:1 평점
       </h3>
       <span>
         {{ killsAvg(champions.kills, champions.games) }} /
@@ -30,7 +30,7 @@
       <h3 :class="{ red: winsAvg(champions.wins, champions.games) >= 60 }">
         {{ winsAvg(champions.wins, champions.games) }}%
       </h3>
-      <span> {{ champions.games }} Played </span>
+      <span> {{ champions.games }}게임 </span>
     </div>
   </div>
 </template>

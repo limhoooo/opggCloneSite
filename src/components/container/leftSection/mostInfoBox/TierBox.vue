@@ -16,9 +16,9 @@
       </p>
       <p :class="$style.winText">
         <b>{{ leagues.tierRank.tierRankPoint }} LP </b>/
-        <span>{{ leagues.wins }}W {{ leagues.losses }}L</span>
+        <span>{{ leagues.wins }}승 {{ leagues.losses }}패</span>
       </p>
-      <p :class="$style.winRate">Win Ratio {{ winRate }}%</p>
+      <p :class="$style.winRate">승률 {{ winRate }}%</p>
     </div>
   </div>
 </template>

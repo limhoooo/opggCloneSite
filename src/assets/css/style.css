@@ -6,6 +6,12 @@
   color: #5e5e5e !important;
   font-weight: 900;
 }
+.gameTabActive {
+  border-bottom: 2px solid #1f8ecd;
+}
+.gameTabActive a {
+  color: #1f8ecd !important;
+}  
 
 .black {
   color: #333 !important;

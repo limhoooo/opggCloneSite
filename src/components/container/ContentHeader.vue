@@ -32,8 +32,8 @@
             {{ userInfo.name }}
           </h1>
           <p>
-            Ladder Rank <b>{{ ladderRank.rank | makeComma }}</b> (
-            {{ ladderRank.rankPercentOfTop }}% of top)
+            레더 랭킹 <b>{{ ladderRank.rank | makeComma }}</b> (상위
+            {{ ladderRank.rankPercentOfTop }}%)
           </p>
         </div>
       </div>

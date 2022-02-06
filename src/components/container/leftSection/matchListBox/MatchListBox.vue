@@ -2,20 +2,29 @@
   <div :class="$style.matchListBox">
     <div :class="$style.matchListHeaderBox">
       <ul :class="$style.matchListTab">
-        <li>
-          <a href="javascript:void(0);">Total</a>
+        <li
+          :class="{ gameTabActive: gameTabFlag === '전체' }"
+          @click="gameTabFnc('전체')"
+        >
+          <a href="javascript:void(0);">전체</a>
         </li>
-        <li>
-          <a href="javascript:void(0);">Ranked Solo</a>
+        <li
+          :class="{ gameTabActive: gameTabFlag === '솔랭' }"
+          @click="gameTabFnc('솔랭')"
+        >
+          <a href="javascript:void(0);">솔로게임</a>
         </li>
-        <li>
-          <a href="javascript:void(0);">Total</a>
+        <li
+          :class="{ gameTabActive: gameTabFlag === '자유 5:5 랭크' }"
+          @click="gameTabFnc('자유 5:5 랭크')"
+        >
+          <a href="javascript:void(0);">자유랭크</a>
         </li>
       </ul>
       <div :class="$style.matchListGraphBox">
         <div :class="$style.matchListGraph">
           <p :class="$style.topText">
-            {{ games.length }}G {{ summary.wins }}W {{ summary.losses }}L
+            {{ games.length }}전 {{ summary.wins }}승 {{ summary.losses }}패
           </p>
           <div :class="$style.boxContent">
             <div :class="$style.chartBox">
@@ -69,7 +78,7 @@
                   <span :class="$style.box1">
                     {{ winsAvg(champion.wins, champion.games) }}% ({{
                       champion.wins
-                    }}W {{ champion.losses }}L)
+                    }}승 {{ champion.losses }}패)
                   </span>
                   <span
                     :class="`${$style.box2} ${kdaColor(
@@ -77,7 +86,7 @@
                     )}`"
                   >
                     {{ kda(champion.kills, champion.assists, champion.deaths) }}
-                    KDA
+                    평점
                   </span>
                 </div>
               </div>
@@ -90,45 +99,23 @@
                 src="../../../../assets/img/group.png"
                 alt="noneChampionImage"
               />
-              <span :class="$style.noneChampionText"> Not found Champion </span>
+              <span :class="$style.noneChampionText">
+                챔피언 정보가 없습니다.
+              </span>
             </li>
           </ul>
         </div>
         <div :class="$style.matchListPositionsBox">
-          <p>Preferred Postion (Rank)</p>
+          <p>선호 포지션 (랭크)</p>
           <div v-for="position in positions" :key="position.index">
             <div :class="$style.matchListPositionItem">
-              <img
-                v-show="position.position === 'MID'"
-                src="../../../../assets/img/icon-mid.png"
-                alt="postionMidImage"
-              />
-              <img
-                v-show="position.position === 'SUP'"
-                src="../../../../assets/img/icon-sup.png"
-                alt="postionSupImage"
-              />
-              <img
-                v-show="position.position === 'TOP'"
-                src="../../../../assets/img/icon-top.png"
-                alt="postionTopImage"
-              />
-              <img
-                v-show="position.position === 'ADC'"
-                src="../../../../assets/img/icon-adc.png"
-                alt="postionAdcImage"
-              />
-              <img
-                v-show="position.position === 'JNG'"
-                src="../../../../assets/img/icon-jng.png"
-                alt="postionJngImage"
-              />
+              <img :src="postionImageFnc(position.position)" alt="" />
               <div :class="$style.matchListPositionItemText">
                 <h3>{{ position.positionName }}</h3>
                 <span>{{ winsAvg(position.games, games.length) }}%</span>
                 <span> | </span>
                 <span
-                  >Win Rate
+                  >승률
                   <b>{{ winsAvg(position.wins, position.games) }}%</b></span
                 >
               </div>
@@ -138,7 +125,7 @@
       </div>
       <div :class="$style.matchListListBox">
         <MatchListItem
-          v-for="game in games"
+          v-for="game in gamesCapyData"
           :key="game.index"
           :gameInfo="game"
         />
@@ -156,12 +143,26 @@ import MatchListItem from "./MatchListItem.vue";
 export default {
   components: { MatchListItem },
   mixins: [calculateMixin],
+  data() {
+    return {
+      gameTabFlag: "전체",
+      gamesData: [],
+    };
+  },
   computed: {
     champions() {
       return this.$store.state.champions || [];
     },
     games() {
       return this.$store.state.games || [];
+    },
+    gamesCapyData: {
+      get() {
+        return this.$store.state.gamesCapyData;
+      },
+      set(newValue) {
+        this.$store.state.gamesCapyData = newValue;
+      },
     },
     positions() {
       return this.$store.state.positions || [];
@@ -172,8 +173,15 @@ export default {
   },
   methods: {
     postionImageFnc(position) {
-      if (position === "MID") {
-        return "../../../../assets/img/icon-mid.png";
+      return require(`../../../../assets/img/icon-${position.toLowerCase()}.png`);
+    },
+    gameTabFnc(type) {
+      this.gameTabFlag = type;
+      if (type === "전체") {
+        this.gamesCapyData = this.games;
+      } else {
+        const gameList = this.games.filter((item) => item.gameType === type);
+        this.gamesCapyData = gameList;
       }
     },
   },
