@@ -134,9 +134,6 @@
   </div>
 </template>
 
-
-
-
 <script>
 import calculateMixin from "@/common/calculateMixin.js";
 import MatchListItem from "./MatchListItem.vue";
