@@ -173,6 +173,7 @@ export default {
       return require(`../../../../assets/img/icon-${position.toLowerCase()}.png`);
     },
     gameTabFnc(type) {
+      // 게임 탭
       this.gameTabFlag = type;
       if (type === "전체") {
         this.gamesCapyData = this.games;
