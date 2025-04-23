@@ -1,0 +1,14 @@
+site_name: "opggCloneSite"
+site_description: "Main documentation for the opggCloneSite"
+repo_url: https://github.com/limhoooo/opggCloneSite
+# 브런치 명
+edit_uri: edit/main/docs
+
+# 사용할 html 플러그인?
+plugins:
+  - techdocs-core
+
+# For sidebar navigation on https://backstage.io/, see `microsite/sidebars.json`
+nav:
+  - Overview:
+      - Getting started: "index.md"
